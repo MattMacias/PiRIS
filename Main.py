@@ -1,8 +1,30 @@
-#######################################################
-#   Members: Matthew Macias
+##########################################################
+#   Members: Matthew Macias, Gavin Phillips, Chris Dilley
 #
 #
-#######################################################
+##########################################################
 
-print "I guess it works"
-print "It definitely works now"
+
+# GPIO Setup
+
+
+
+
+
+# GUI Setup
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Main Section, establishes the GUI and GPIO functions
