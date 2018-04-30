@@ -3,20 +3,27 @@
 #
 #
 ##########################################################
-print "Loading files"
 import pygame
 import sys
 import time
 from os import listdir
-print "Files ready"
+
 
 # GUI Setup
 pygame.init()
 
+# Scans the GameFiles directory for games and stores their names
 def pullGames():
+    print "Scanning for games..."
     global gameList
+    # Checks each directory within GameFiles
     for game in listdir("GameFiles"):
+        # Runs the placeholder name file within it
+        # It is better used to pull a game's logo rather than name\
+        #   Since the name is the variable 'game' already
         execfile("./GameFiles/{}/name.py".format(game))
+        print " {}.  {} retrieved".format(len(gameList),game)
+    print "All compatible games retrieved"
 
 def newWindow():
     global window, winHeight, winWidth, winTitle
@@ -25,7 +32,7 @@ def newWindow():
     pygame.display.set_caption(winTitle)
     window = pygame.display.set_mode((winWidth, winHeight), pygame.HWSURFACE|pygame.DOUBLEBUF)
 
-def fpsCounter():
+def countFPS():
     global curSec, curFrame, FPS
 
     if curSec == time.strftime("%S"):
@@ -35,6 +42,9 @@ def fpsCounter():
         curFrame = 0
         curSec = time.strftime("%S")
 
+def showFPS():
+    fps_overlay = fps_font.render(str(FPS), True, (255,255,255))
+    window.blit(fps_overlay, (0,0))
 # GPIOSetup
 
 
@@ -51,6 +61,8 @@ def fpsCounter():
 
 # Main Section, establishes the GUI and GPIO functions
 #Variable setup
+fps_font = pygame.font.SysFont("verdana",12)
+print fps_font
 isRunning = True
 curSec = 0
 curFrame = 0
@@ -66,10 +78,18 @@ while isRunning:
     for event in pygame.event.get():
         if (event.type == pygame.QUIT):
             isRunning = 0
+    # Logic
+    countFPS()
+
 
     # Render the next frame
-    window.fill((0,0,0))
-
+    # Bottom Layer - Background
+    window.fill((0,162,232))
+    # Layer 1 - 32 x 32 px Gridlines
+    for x in range(0,640, 32):
+        for y in range(0,480, 32):
+            pygame.draw.rect(window, (150,150,150), (x,y,33, 33), 1)
+    showFPS()
     
     pygame.display.update()
 
