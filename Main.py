@@ -6,10 +6,17 @@
 print "Loading files"
 import pygame
 import sys
+import time
+from os import listdir
 print "Files ready"
 
 # GUI Setup
 pygame.init()
+
+def pullGames():
+    global gameList
+    for game in listdir("GameFiles"):
+        execfile("./GameFiles/{}/name.py".format(game))
 
 def newWindow():
     global window, winHeight, winWidth, winTitle
@@ -48,6 +55,8 @@ isRunning = True
 curSec = 0
 curFrame = 0
 FPS = 0
+gameList = []
+pullGames()
 
 # Init the Home Screen
 newWindow()
