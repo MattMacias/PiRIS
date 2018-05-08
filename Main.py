@@ -86,8 +86,8 @@ while isRunning:
     # Bottom Layer - Background
     window.fill((0,162,232))
     # Layer 1 - 32 x 32 px Gridlines
-    for x in range(0,640, 32):
-        for y in range(0,480, 32):
+    for x in range(0,winWidth, 32):
+        for y in range(0,winHeight, 32):
             pygame.draw.rect(window, (150,150,150), (x,y,33, 33), 1)
     showFPS()
     
