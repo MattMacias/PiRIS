@@ -6,7 +6,7 @@ pygame.init()
 print "pygame loaded"
 
 winWidth = 800
-winHeight = 600
+winHeight = 450
 
 gameDisplay = pygame.display.set_mode((winWidth,winHeight))
 pygame.display.set_caption("RPG Demo")
@@ -74,19 +74,21 @@ while running:
             
                 
 
-        if (headx < 800-size and goingRight >0):
+        if (headx < winWidth-size and goingRight >0):
             headx += goingRight
         elif (headx > 0 and goingRight < 0):
             headx += goingRight
-        if (heady < 600-size and goingUp > 0):
+        if (heady < winHeight-size and goingUp > 0):
             heady -= goingUp
         elif (heady > 0 and goingUp < 0):
             heady -= goingUp
-        
+
+
+        # Draws gridlines
         gameDisplay.fill(white)
-        for meridian in range(0,800,50):
+        for meridian in range(0,winWidth,16):
             gameDisplay.fill(black, rect = [meridian, 0, 1, 600])
-        for parallel in range(0,600,50):
+        for parallel in range(0,winHeight,16):
             gameDisplay.fill(black, rect = [0,parallel, 800, 1])
 
         pygame.draw.rect(gameDisplay, green, [headx, heady, size, size])
