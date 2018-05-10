@@ -11,7 +11,9 @@ winHeight = 416
 gameDisplay = pygame.display.set_mode((winWidth,winHeight))
 pygame.display.set_caption("RPG Demo")
 
-
+##
+bg = pygame.image.load(("floor.gif"))
+##
 
 
 
@@ -92,6 +94,11 @@ while running:
             gameDisplay.fill(black, rect = [meridian, 0, 1, winHeight])
         for parallel in range(0,winHeight,32):
             gameDisplay.fill(black, rect = [0,parallel, winWidth, 1])
+
+        ##
+        gameDisplay.blit(bg, [0, 0])
+        pygame.display.update()
+        ##
 
         # Draw the player
         pygame.draw.rect(gameDisplay, green, [headx, heady, size, size])
