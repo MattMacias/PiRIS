@@ -97,7 +97,6 @@ while running:
 
         ##
         gameDisplay.blit(bg, [0, 0])
-        pygame.display.update()
         ##
 
         # Draw the player
