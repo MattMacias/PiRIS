@@ -50,6 +50,7 @@ while gameRunning:
                     looking = "West"
                 elif event.key == pygame.K_ESCAPE:
                     gameRunning = False
+                    playing = False
             
         # Up Arrow
         if (arrows[0] == 1):
