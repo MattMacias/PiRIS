@@ -31,11 +31,12 @@ def pullGames():
         gameList.append(game)
         gameText.append(gamesFont.render(game, False, (255,255,0)))
         gamesImg.append(pygame.image.load(("GameFiles/{}/IMG.gif".format(game))))
+        gamesImg[len(gameList)-1] = pygame.transform.scale(gamesImg[len(gameList)-1],(416,288))
         print " {}.  {} retrieved".format(len(gameList),game)
     print "All compatible games retrieved"
     return gameList, gameText, gamesImg
 
-def newWindow():
+def resetWindow():
     global gameDisplay, winHeight, winWidth, winTitle
     winWidth, winHeight = 800,416
     winTitle = "PiRIS Home"
@@ -63,7 +64,7 @@ def render():
     
 
     # Displays the Title Text
-    gameDisplay.blit(title, (144, 16))
+    gameDisplay.blit(title, (112, 16))
     
 # GPIOSetup
 
@@ -84,15 +85,19 @@ def render():
 gamesFont = pygame.font.SysFont("verdana",36)
 titleFont = pygame.font.SysFont("verdana",48)
 title  = titleFont.render("Welcome to the PiRIS", False, (255,255,0))
+Running = True
 isRunning = True
 scrolling = 0
 
-gameList, gamesText, gamesImg = pullGames()
 
+
+gameList, gamesText, gamesImg = pullGames()
 sel = 0
 
+
 # Init the Home Screen
-newWindow()
+resetWindow()
+
 
 
 while isRunning:
@@ -143,6 +148,10 @@ while isRunning:
     
     pygame.display.update()
     sleep(0.016)
+    if not Running:
+        title  = titleFont.render("Welcome BACK to the PiRIS", False, (255,255,0))
+        resetWindow()
+        
 
 pygame.quit()
 sys.exit()
