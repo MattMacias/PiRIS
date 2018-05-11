@@ -12,14 +12,14 @@ winHeight = 416
 pygame.display.set_caption("RPG Demo")
 
 ##
-bg = pygame.image.load(("floor.gif"))
+bg = pygame.image.load(("./GameFiles/RPG/floor.gif"))
 ##
 
 
 
-running = True
+gameRrunning = True
 
-while running:
+while gameRunning:
     #Size is a square length/width
     size = 10
     headx = winWidth  /2 - size/2
@@ -30,11 +30,12 @@ while running:
     rightSpeed = 3
     playing = True
     looking = "North"
+    arrows = pygame.key.get_pressed()[273:277]
     while playing:
         for event in pygame.event.get():
             # Exit button pressed
             if (event.type == pygame.QUIT):
-                running = False
+                gameRunning = False
                 playing = False
             arrows = pygame.key.get_pressed()[273:277]
 
@@ -47,6 +48,8 @@ while running:
                     looking = "East"
                 elif event.key  == pygame.K_LEFT:
                     looking = "West"
+                elif event.key == pygame.K_ESCAPE:
+                    gameRunning = False
             
         # Up Arrow
         if (arrows[0] == 1):

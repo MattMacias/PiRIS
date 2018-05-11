@@ -3,48 +3,45 @@
 #
 #
 ##########################################################
-import pygame
+
 import sys
-import time
+from time import time, sleep
 from os import listdir
+import pygame
 
 
 # GUI Setup
 pygame.init()
+buttonSel   = pygame.image.load(("buttonPressed.gif"))
+buttonUnsel = pygame.image.load(("buttonUnpressed.gif"))
 
 # Scans the GameFiles directory for games and stores their names
 def pullGames():
+    global gamesFont
+    gameList = []
+    gameText = []
+    gamesImg = []
     print "Scanning for games..."
-    global gameList
     # Checks each directory within GameFiles
     for game in listdir("GameFiles"):
         # Runs the placeholder name file within it
         # It is better used to pull a game's logo rather than name\
         #   Since the name is the variable 'game' already
-        execfile("./GameFiles/{}/name.py".format(game))
+        gameList.append(game)
+        gameText.append(gamesFont.render(game, False, (255,255,0)))
+        gamesImg.append(pygame.image.load(("GameFiles/{}/IMG.gif".format(game))))
         print " {}.  {} retrieved".format(len(gameList),game)
     print "All compatible games retrieved"
+    return gameList, gameText, gamesImg
 
 def newWindow():
-    global window, winHeight, winWidth, winTitle
-    winWidth, winHeight = 800,600
+    global gameDisplay, winHeight, winWidth, winTitle
+    winWidth, winHeight = 800,416
     winTitle = "PiRIS Home"
     pygame.display.set_caption(winTitle)
-    window = pygame.display.set_mode((winWidth, winHeight), pygame.HWSURFACE|pygame.DOUBLEBUF)
+    gameDisplay = pygame.display.set_mode((winWidth, winHeight))
 
-def countFPS():
-    global curSec, curFrame, FPS
 
-    if curSec == time.strftime("%S"):
-        curFrame += 1
-    else:
-        FPS = curFrame
-        curFrame = 0
-        curSec = time.strftime("%S")
-
-def showFPS():
-    fps_overlay = fps_font.render(str(FPS), True, (255,255,255))
-    window.blit(fps_overlay, (0,0))
 # GPIOSetup
 
 
@@ -61,14 +58,14 @@ def showFPS():
 
 # Main Section, establishes the GUI and GPIO functions
 #Variable setup
-fps_font = pygame.font.SysFont("verdana",12)
-print fps_font
+gamesFont = pygame.font.SysFont("verdana",36)
+titleFont = pygame.font.SysFont("verdana",48)
+title  = titleFont.render("Welcome to the PiRIS", False, (255,255,0))
 isRunning = True
-curSec = 0
-curFrame = 0
-FPS = 0
-gameList = []
-pullGames()
+
+gameList, gamesText, gamesImg = pullGames()
+
+sel = 0
 
 # Init the Home Screen
 newWindow()
@@ -78,21 +75,44 @@ while isRunning:
     for event in pygame.event.get():
         if (event.type == pygame.QUIT):
             isRunning = 0
-    # Logic
-    countFPS()
+        if (event.type == pygame.KEYDOWN):
+            if (event.key == pygame.K_ESCAPE):
+                isRunning = 0
+            elif (event.key == pygame.K_UP and sel > 0):
+                sel -= 1
+            elif (event.key == pygame.K_DOWN and sel < len(gameList)-1):
+                sel += 1
+            elif (event.key == pygame.K_SPACE):
+                execfile("./GameFiles/{}/Main.py".format(gameList[game]))
+                
 
+    
 
     # Render the next frame
     # Bottom Layer - Background
-    window.fill((0,162,232))
+    gameDisplay.fill((128,0,0))
     # Layer 1 - 32 x 32 px Gridlines
     for x in range(0,winWidth, 32):
         for y in range(0,winHeight, 32):
-            pygame.draw.rect(window, (150,150,150), (x,y,33, 33), 1)
-    showFPS()
+            pygame.draw.rect(gameDisplay, (150,150,150), (x, y, 33, 33), 1)
+
+    # Displays the Title Text
+    gameDisplay.blit(title, (144, 16))
+
+    # Displays the selected game's image
+    pygame.draw.rect(gameDisplay, (0,0,0), (316,92, 424, 296))
+    gameDisplay.blit(gamesImg[sel], [320, 96])
+    
+    # Displays the selected games
+    for game in range(len(gameList)):
+        if (game == sel):
+            gameDisplay.blit(buttonSel, [32, 96 + game*128])
+        else:
+            gameDisplay.blit(buttonUnsel, [32, 96 + game*128])
+        gameDisplay.blit(gamesText[game],(48, 120+game*128))
     
     pygame.display.update()
-
+    sleep(0.016)
 
 pygame.quit()
 sys.exit()
