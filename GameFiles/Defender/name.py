@@ -1,1 +1,0 @@
-gameList.append("DEFENDER")
