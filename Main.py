@@ -106,10 +106,10 @@ while isRunning:
     # Displays the selected games
     for game in range(len(gameList)):
         if (game == sel):
-            gameDisplay.blit(buttonSel, [32, 96 + game*128])
+            gameDisplay.blit(buttonSel, [32, 96 + game*96])
         else:
-            gameDisplay.blit(buttonUnsel, [32, 96 + game*128])
-        gameDisplay.blit(gamesText[game],(48, 120+game*128))
+            gameDisplay.blit(buttonUnsel, [32, 96 + game*96])
+        gameDisplay.blit(gamesText[game],(48, 104+game*96))
     
     pygame.display.update()
     sleep(0.016)

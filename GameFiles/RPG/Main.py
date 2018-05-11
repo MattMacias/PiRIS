@@ -17,7 +17,7 @@ bg = pygame.image.load(("./GameFiles/RPG/floor.gif"))
 
 
 
-gameRrunning = True
+gameRunning = True
 
 while gameRunning:
     #Size is a square length/width
