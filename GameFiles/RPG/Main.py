@@ -15,6 +15,7 @@ pygame.display.set_caption("RPG Demo")
 bg = pygame.image.load(("./GameFiles/RPG/floor.gif"))
 ##
 
+player = pygame.image.load("./GameFiles/RPG/test.gif")
 
 
 gameRunning = True
@@ -107,7 +108,7 @@ while gameRunning:
         ##
 
         # Draw the player
-        pygame.draw.rect(gameDisplay, green, [headx, heady, size, size])
+        gameDisplay.blit(player, (headx, heady))
         sleep(0.016)
         pygame.display.update()
     
