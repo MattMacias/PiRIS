@@ -98,8 +98,13 @@ while running:
         for parallel in range(0,winHeight,32):
             gameDisplay.fill(black, rect = [0,parallel, winWidth, 1])
 
+<<<<<<< HEAD
 
         
+=======
+        ##
+        gameDisplay.blit(bg, [0, 0])
+>>>>>>> 49d2a6a5950f25c1ea5898f29d88cf84bbc18ace
         ##
 
         # Draw the player
