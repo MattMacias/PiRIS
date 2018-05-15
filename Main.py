@@ -51,12 +51,12 @@ def scroll(direction):
     pygame.display.update()
 
 ###
-bg = pygame.image.load("tower.gif")
+background = pygame.image.load("tower.gif")
 ###
 
 def render():
     # Bottom Layer 1 - Background
-    gameDisplay.blit(bg, [0, 0])
+    gameDisplay.blit(background, [0, 0])
     # Layer 2 - 32 x 32 px Gridlines
     for x in range(0,winWidth, 32):
         for y in range(0,winHeight, 32):

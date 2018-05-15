@@ -12,11 +12,11 @@ winHeight = 416
 pygame.display.set_caption("RPG Demo")
 
 ##
-bg = pygame.image.load(("./GameFiles/RPG/floor.gif"))
+bg = pygame.image.load(("./GameFiles/Anky's Adv/floor.gif"))
 ##
 
-player1 = pygame.image.load("./GameFiles/RPG/test.gif")
-player2 = pygame.image.load("./GameFiles/RPG/test.gif")
+player1 = pygame.image.load("./GameFiles/Anky's Adv/test.gif")
+player2 = pygame.image.load("./GameFiles/Anky's Adv/test.gif")
 
 #Size is a square length/width
 size = 10

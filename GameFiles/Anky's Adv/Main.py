@@ -12,11 +12,11 @@ winHeight = 416
 pygame.display.set_caption("RPG Demo")
 
 ##
-bg = pygame.image.load(("./GameFiles/RPG/floor.gif"))
+bg = pygame.image.load(("./GameFiles/Anky's Adv/floor.gif"))
 ##
 
 
-player = pygame.image.load("./GameFiles/RPG/The Ultimate Lifeform.gif")
+player = pygame.image.load("./GameFiles/Anky's Adv/The Ultimate Lifeform.gif")
 gameRunning = True
 
 while gameRunning:
