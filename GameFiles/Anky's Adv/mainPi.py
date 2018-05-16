@@ -43,9 +43,9 @@ class Player(pygame.sprite.Sprite):
     def update(self):
         self.speedx = 0
         keystate = pygame.key.get_pressed()
-        if keystate[pygame.K_LEFT]:
+        if (keystate[pygame.K_LEFT] or GPIO.input(22)):
             self.speedx = -8
-        if keystate[pygame.K_RIGHT]:
+        if (keystate[pygame.K_RIGHT] or GPIO.input(25)):
             self.speedx = 8
         self.rect.x += self.speedx
         if self.rect.right > WIDTH:
@@ -106,9 +106,12 @@ def show_go_screen():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
-            if event.type == pygame.KEYUP:
+            if event.type == pygame.KEYDOWN:
                 waiting = False
-
+        if (GPIO.input(spaceBut) or GPIO.input(leftBut) or GPIO.input(upBut) or GPIO.input(rightBut) or GPIO.input(downBut)):
+            waiting = False
+        if (GPIO.input(escBut)):
+            pygame.quit()
 
 all_sprites = pygame.sprite.Group()
 bugs = pygame.sprite.Group()
@@ -125,9 +128,9 @@ score = 0
 
 
 
-gameRunning = True
+Running = True
 
-while gameRunning:
+while Running:
     show_go_screen()
     sleep(3.5)
 
@@ -138,7 +141,7 @@ while gameRunning:
         for event in pygame.event.get():
             # Exit button pressed
             if (event.type == pygame.QUIT):
-                gameRunning = False
+                Running = False
                 playing = False
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
@@ -147,6 +150,18 @@ while gameRunning:
                     gameRunning = False
                     playing = False
             arrows = pygame.key.get_pressed()[273:277]
+
+
+        if (GPIO.input(escBut)):
+            Running = False
+            playing = False
+            while GPIO.input(escBut):
+                wait(0.016)
+        if (GPIO.input(spaceBut)):
+            Anky.shoot()
+            while GPIO.input(spaceBut):
+                wait(0.016)
+
 
 
         all_sprites.update()

@@ -149,6 +149,12 @@ while waiting:
                 waiting = False
                 Running = False
 
+    if (GPIO.input(spaceBut)):
+        waiting = False
+    if (GPIO.input(escBut)):
+        waiting = False
+        Running = False
+
 while Running:
     for event in pygame.event.get():
         # Exit button pressed
@@ -179,7 +185,12 @@ while Running:
                     gameTurn += 1
                     playerTurn = 1
 
-    if GPIO.input(13):
+    # GPIO Alternate for Exiting
+    if GPIO.input(escBut):
+        Running = False
+                    
+    # GPIO Alternate for Firing Sequence
+    if GPIO.input(spaceBut):
         # Fires the player according to player input
         impact = player[playerTurn-1].fire(power, angle)
         # Calculate how hard the other player is knocked around by
@@ -199,18 +210,18 @@ while Running:
             playerTurn = 1
         
     # Up Arrow
-    if ((arrows[0] == 1 or GPIO.input(23)) and power < 100):
+    if ((arrows[0] == 1 or GPIO.input(upBut)) and power < 100):
         power += 1
     # Down Arrow, Up overrides if both are pressed
-    elif (arrows[1] == 1 and power > 0):
+    elif ((arrows[1] == 1 or GPIO.input(downBut)) and power > 0):
         power -= 1
     # Right Arrow
-    if (arrows[2] == 1):
+    if (arrows[2] == 1 or GPIO.input(rightBut)):
         angle -= 3
         if (angle < 0):
             angle = 0
     # Left Arrow, Right overrides if both are pressed
-    elif (arrows[3] == 1):
+    elif (arrows[3] == 1 or GPIO.input(leftBut)):
         angle += 3
         if (angle > 180):
             angle = 180
