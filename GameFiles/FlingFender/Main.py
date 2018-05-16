@@ -2,13 +2,13 @@
 import pygame
 from time import time, sleep
 from Color import*
-from math import sin, cos, pi
+from math import sin, cos, pi, sqrt
 
 # Rename window
 pygame.display.set_caption("FlingFender")
 
 # Image loading
-bg = pygame.image.load(("./GameFiles/FlingFender/floor.gif"))
+bg = pygame.image.load(("./GameFiles/FlingFender/bg.png"))
 player1 = pygame.image.load("./GameFiles/FlingFender/test.gif")
 player2 = pygame.image.load("./GameFiles/FlingFender/test.gif")
 pturnFont = pygame.font.SysFont("verdana",24)
@@ -20,6 +20,8 @@ class Player():
     def __init__(self, x, color):
         self.x = x
         self.fixY(self.x)
+        self.health = 1000
+        self.score = 0
         if (color == "blue"):
             self.img = pygame.image.load("./GameFiles/FlingFender/bluetank.gif")
         elif (color == "red"):
@@ -48,31 +50,32 @@ class Player():
 
     def render(self):
         # Renders off the aesthetically center of the image
-        gameDisplay.blit(self.img, (self.x - 94, self.y - 69))
+        gameDisplay.blit(self.img, (self.x - 135, self.y - 69))
 
     def fire(self, power, angle):
         dy = sin(pi*angle/180) * power / 3
         dx = cos(pi*angle/180) * power / 3
-        while self.y <= sin(self.x / 100) + 200:
+        while self.y <= 416 - (50*sin(self.x / 100) + 276):
             self.x += dx
             self.y -= dy
             dy -= 1
             render()
-            print dy
             # Wallbouncing
-            if ((self.x + 135) > 800):
-                dx = -dx
+            if ((self.x + 77) > 800):
+                dx = -abs(dx)
             elif (self.x < 0):
-                dx = -dx
+                dx = abs(dx)
         self.fixY(self.x)
+        impact = sqrt(dx**2 + dy **2)
+        return impact
 
     def fixY(self, x):
-        self.y = sin(x/100) + 200
+        self.y = 416 - (50*sin(x/100.0) + 276)
 
 
 def render():
     # Displays the background
-    gameDisplay.fill(blue, rect = [0,0,winWidth, winHeight])
+    gameDisplay.blit(bg, (0,0))
 
     # Draws placeholder gridlines
     for meridian in range(0,winWidth,32):
@@ -87,6 +90,16 @@ def render():
     pturnLabel = pturnFont.render("Your move, Player {}".format(playerTurn), False, (255,255,0))
     gameDisplay.blit(turnLabel, (320, 0))
     gameDisplay.blit(pturnLabel, (272, 64))
+
+    # Display player scores, angle, and power
+    p1Score = pturnFont.render("Player 1 score: {}".format(player[0].score), False, (255,255,0))
+    p2Score = pturnFont.render("Player 2 score: {}".format(player[1].score), False, (255,255,0))
+    gameDisplay.blit(p1Score, (32,288))
+    gameDisplay.blit(p2Score, (32,336))
+    powLabel = pturnFont.render("Power: {}".format(power), False, (255,255,0))
+    angLabel = pturnFont.render("Angle: {}".format(angle), False, (255,0,0))
+    gameDisplay.blit(powLabel, (640, 288))
+    gameDisplay.blit(angLabel, (640, 336))
         
 
     # Draw the player
@@ -115,67 +128,65 @@ playing = True
 
 arrows = pygame.key.get_pressed()[273:277]
 playerTurn = 1
-gameTurn   = 0
+gameTurn   = 1
 Running = True
-
+power, angle = 0, 0
 player = [Player(64, "blue"), Player(winWidth - 96, "red")]
 
 
+
 while Running:
-    # Iterates the current game turn every other turn
-    if  playerTurn == 1:
-        gameTurn += 1
-    # Resets other information
-    power = 0
-    angle = 0
-    
-    while playing:
-        for event in pygame.event.get():
-            # Exit button pressed
-            if (event.type == pygame.QUIT):
+    for event in pygame.event.get():
+        # Exit button pressed
+        if (event.type == pygame.QUIT):
+            Running = False
+        arrows = pygame.key.get_pressed()[273:277]
+        # Specific key events, one time press rather than holding
+        if (event.type == pygame.KEYDOWN):
+            # Quits the turn and the game
+            if event.key == pygame.K_ESCAPE:
                 Running = False
-                playing = False
-            arrows = pygame.key.get_pressed()[273:277]
-            # Specific key events, one time press rather than holding
-            if (event.type == pygame.KEYDOWN):
-                # Quits the turn and the game
-                if event.key == pygame.K_ESCAPE:
-                    Running = False
-                    playing = False
-                elif event.key == pygame.K_SPACE:
-                    player[playerTurn-1].fire(power, angle)
-                    if playerTurn == 1:
-                        playerTurn = 2
-                    else:
-                        gameTurn += 1
-                        playerTurn = 1
-            
-        # Up Arrow
-        if (arrows[0] == 1 and power < 100):
-            power += 1
-        # Down Arrow, Up overrides if both are pressed
-        elif (arrows[1] == 1 and power > 0):
-            power -= 1
-        # Right Arrow
-        if (arrows[2] == 1):
-            angle -= 3
-            if (angle < 0):
-                angle = 0
-        # Left Arrow, Right overrides if both are pressed
-        elif (arrows[3] == 1):
-            angle += 3
-            if (angle > 180):
-                angle = 180
-        print arrows, goingUp, goingRight, power, angle
-            
-
-            
-
-
+            elif event.key == pygame.K_SPACE:
+                impact = player[playerTurn-1].fire(power, angle)
+                dist = sqrt((player[0].x - player[1].x)**2 + (player[0].y - player[1].y)**2)
+                knockback = impact / dist * 300
+                player[playerTurn - 1].score += knockback
+                if (player[not (playerTurn - 1)].x < player[playerTurn - 1].x): 
+                    player[not (playerTurn - 1)].fire(knockback, 70)
+                else:
+                    player[not (playerTurn - 1)].fire(knockback, 110)
+                if playerTurn == 1:
+                    playerTurn = 2
+                else:
+                    gameTurn += 1
+                    playerTurn = 1
+        
+    # Up Arrow
+    if (arrows[0] == 1 and power < 100):
+        power += 1
+    # Down Arrow, Up overrides if both are pressed
+    elif (arrows[1] == 1 and power > 0):
+        power -= 1
+    # Right Arrow
+    if (arrows[2] == 1):
+        angle -= 3
+        if (angle < 0):
+            angle = 0
+    # Left Arrow, Right overrides if both are pressed
+    elif (arrows[3] == 1):
+        angle += 3
+        if (angle > 180):
+            angle = 180
+    print arrows, goingUp, goingRight, power, angle
+        
 
         
-        render()
 
-        
+
+
     
+    render()
+
+    
+
 
