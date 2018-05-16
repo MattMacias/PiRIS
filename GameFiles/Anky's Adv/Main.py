@@ -19,6 +19,8 @@ bg = pygame.image.load(("./GameFiles/Anky's Adv/floor.gif"))
 player = pygame.image.load("./GameFiles/Anky's Adv/The Ultimate Lifeform.gif")
 bullet = pygame.image.load("./GameFiles/Anky's Adv/Anky Sprites/pythonblast.gif")
 
+
+
 ############################################
 class Player(pygame.sprite.Sprite):
     def __init__(self):
@@ -26,9 +28,9 @@ class Player(pygame.sprite.Sprite):
 
         self.image = pygame.image.load("./GameFiles/Anky's Adv/The Ultimate Lifeform.gif")
         self.rect = self.image.get_rect()
-        self.rect.center = (WIDTH / 2, HEIGHT / 2)
-        self.rect.centerx = random.randint(1, WIDTH)
-        self.rect.bottom - random.randint(1, HEIGHT)
+        #self.rect.center = (WIDTH / 2, HEIGHT / 2)
+        #self.rect.centerx = random.randint(1, WIDTH)
+        #self.rect.bottom - random.randint(1, HEIGHT)
 
     def shoot(self):
         bullet = Bullet(self.rect.x, self.rect.centery)
@@ -72,7 +74,7 @@ class Bullet(pygame.sprite.Sprite):
 
 gameRunning = True
 
-
+Anky = Player()
 
 while gameRunning:
     #Size is a square length/width
@@ -108,8 +110,8 @@ while gameRunning:
                     playing = False
                 #####################
                 elif event.key == pygame.K_SPACE:
-                    bullet(Bullet)
-                    gameDisplay.blit(bullet, [0, 0])
+                    Anky.shoot
+
                 #################
                    
 
