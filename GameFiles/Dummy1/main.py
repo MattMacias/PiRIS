@@ -1,1 +1,1 @@
-gameList.append("DEFENDER")
+print "Hello World!"

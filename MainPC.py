@@ -71,6 +71,7 @@ def resetWindow():
 def mainRender():
     # Bottom Layer - Background
     gameDisplay.blit(background, [0, 0])
+    
 ##    # Debugging 32 x 32 px gridlines
 ##    for x in range(0,winWidth, 32):
 ##        for y in range(0,winHeight, 32):
@@ -99,7 +100,7 @@ sel = 0
 scrollAmt = 0
 
 # Imported information when pulling games
-gameList, gamesText, gamesImg = pullGames()
+gameList, gameText, gamesImg = pullGames()
 
 
 # Initialize the Home Screen
@@ -167,7 +168,7 @@ while isRunning:
             
     # Button Labels
         # Displays game labels over buttons
-        gameDisplay.blit(gamesText[game],(48, 136+(game-sel)*96 - scrollAmt))
+        gameDisplay.blit(gameText[game],(48, 136+(game-sel)*96 - scrollAmt))
         # Displays the Title Text - render redundant, but goes over buttons for scrolling
         gameDisplay.blit(title, (112, 16))
 

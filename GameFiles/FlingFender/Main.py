@@ -92,8 +92,8 @@ def render():
     gameDisplay.blit(pturnLabel, (272, 64))
 
     # Display player scores, angle, and power
-    p1Score = pturnFont.render("Player 1 score: {}".format(player[0].score), False, (255,255,0))
-    p2Score = pturnFont.render("Player 2 score: {}".format(player[1].score), False, (255,255,0))
+    p1Score = pturnFont.render("Player 1 score: %0.2f" % player[0].score, False, (255,255,0))
+    p2Score = pturnFont.render("Player 2 score: %0.2f" % player[1].score, False, (255,255,0))
     gameDisplay.blit(p1Score, (32,288))
     gameDisplay.blit(p2Score, (32,336))
     powLabel = pturnFont.render("Power: {}".format(power), False, (255,255,0))

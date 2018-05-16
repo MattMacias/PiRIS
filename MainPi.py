@@ -12,12 +12,20 @@ from time import time, sleep
 from os import listdir
 import pygame
 
-
+#########################
 # GUI Setup
+#########################
 pygame.init()
+# Images
 buttonSel   = pygame.image.load(("buttonPressed.gif"))
 buttonUnsel = pygame.image.load(("buttonUnpressed.gif"))
 upArrow     = pygame.image.load(("upArrow.gif"))
+background = pygame.image.load("tower.gif")
+# Text
+gamesFont = pygame.font.SysFont("verdana",36)
+# Larger font for title
+titleFont = pygame.font.SysFont("verdana",48)
+title  = titleFont.render("Welcome to the PiRIS", False, (255,255,0))
 
 # Scans the GameFiles directory for games and stores their names
 def pullGames():
@@ -28,16 +36,26 @@ def pullGames():
     print "Scanning for games..."
     # Checks each directory within GameFiles
     for game in listdir("GameFiles"):
-        # Runs the placeholder name file within it
-        # It is better used to pull a game's logo rather than name\
-        #   Since the name is the variable 'game' already
+        # Adds a name, label, and image for each game to their corrseponding lists
         gameList.append(game)
         gameText.append(gamesFont.render(game, False, (255,255,0)))
         gamesImg.append(pygame.image.load(("GameFiles/{}/IMG.gif".format(game))))
+        # Scales images from imported games
         gamesImg[len(gameList)-1] = pygame.transform.scale(gamesImg[len(gameList)-1],(416,288))
         print " {}.  {} retrieved".format(len(gameList),game)
-    print "All compatible games retrieved"
+    # Special procedures for Anky's Adv and FlingFender
+    aIndex = gameList.index("Anky's Adv")
+    gameList[0], gameList[aIndex] = gameList[aIndex], gameList[0]
+    gameText[0], gameText[aIndex] = gameText[aIndex], gameText[0]
+    gamesImg[0],  gamesImg[aIndex]  = gamesImg[aIndex],  gamesImg[0]
+    fIndex = gameList.index("FlingFender")
+    gameList[1], gameList[fIndex] = gameList[fIndex], gameList[1]
+    gameText[1], gameText[fIndex] = gameText[fIndex], gameText[1]
+    gamesImg[1],  gamesImg[fIndex]  = gamesImg[fIndex],  gamesImg[1]
+        
+    print "All compatible games retrieved!"
     return gameList, gameText, gamesImg
+
 
 def resetWindow():
     global gameDisplay, winHeight, winWidth, winTitle
@@ -46,76 +64,71 @@ def resetWindow():
     pygame.display.set_caption(winTitle)
     gameDisplay = pygame.display.set_mode((winWidth, winHeight))
 
-def scroll(direction):
-    render()
-    
 
-    pygame.display.update()
-
-###
-background = pygame.image.load("tower.gif")
-###
-
-def render():
-    # Bottom Layer 1 - Background
+def mainRender():
+    # Bottom Layer - Background
     gameDisplay.blit(background, [0, 0])
-    # Layer 2 - 32 x 32 px Gridlines
-    for x in range(0,winWidth, 32):
-        for y in range(0,winHeight, 32):
-            pygame.draw.rect(gameDisplay, (150,150,150), (x, y, 33, 33), 1)
-    # Layer 2 - boxes and buttons
+    
+##    # Debugging 32 x 32 px gridlines
+##    for x in range(0,winWidth, 32):
+##        for y in range(0,winHeight, 32):
+##            pygame.draw.rect(gameDisplay, (150,150,150), (x, y, 33, 33), 1)
+
     # Displays the selected game's image
     pygame.draw.rect(gameDisplay, (0,0,0), (316,92, 424, 296))
     gameDisplay.blit(gamesImg[sel], [320, 96])
     
-
     # Displays the Title Text
     gameDisplay.blit(title, (112, 16))
-    
+
+
+####################    
 # GPIOSetup
+####################
 GPIO.setmode(GPIO.BCM)
 
 leftBut = 22
 upBut = 23
 downBut = 24
 rightBut = 25
+spaceBut = 13
+escBut = 12
 
 GPIO.setup(leftBut, GPIO.IN, GPIO.PUD_DOWN)
 GPIO.setup(upBut, GPIO.IN, GPIO.PUD_DOWN)
 GPIO.setup(downBut, GPIO.IN, GPIO.PUD_DOWN)
 GPIO.setup(rightBut, GPIO.IN, GPIO.PUD_DOWN)
+GPIO.setup(spaceBut, GPIO.IN, GPIO.PUD_DOWN)
+GPIO.setup(escBut, GPIO.IN, GPIO.PUD_DOWN)
 
 
 
 
 
+########################################################
+# Main Section, establishes the GUI and loops the menu
+########################################################
 
-
-
-
-
-# Main Section, establishes the GUI and GPIO functions
-#Variable setup
-gamesFont = pygame.font.SysFont("verdana",36)
-titleFont = pygame.font.SysFont("verdana",48)
-title  = titleFont.render("Welcome to the PiRIS", False, (255,255,0))
+# Static Variable setup
 Running = True
 isRunning = True
 scrolling = 0
-
-
-
-gameList, gamesText, gamesImg = pullGames()
 sel = 0
+scrollAmt = 0
 
 
-# Init the Home Screen
+
+# Imported information when pulling games
+gameList, gamesText, gamesImg = pullGames()
+
+
+# Initialize the Home Screen
 resetWindow()
 
 
-
+# Menu Loop
 while isRunning:
-    # Ignores buttons while scrolling
+# Ignores buttons while scrolling
     if (not scrolling):
         for event in pygame.event.get():
             if (event.type == pygame.QUIT):
@@ -124,54 +137,80 @@ while isRunning:
                 if (event.key == pygame.K_ESCAPE):
                     isRunning = 0
                 elif (event.key == pygame.K_UP and sel > 0):
-                    sel -= 1
-                    scroll("up")
+                    scrolling = -1
                 elif (event.key == pygame.K_DOWN and sel < len(gameList)-1):
-                    sel += 1
-                    scroll("down")
+                    scrolling = 1
                 elif (event.key == pygame.K_SPACE):
                     execfile("./GameFiles/{}/Main.py".format(gameList[sel]))
+        # GPIO Alternative buttons
         if (GPIO.input(upBut) and sel > 0):
-            sel -= 1
-            scroll("up")
+            scrolling = -1
             while GPIO.input(upBut):
                 sleep(0.016)
         elif (GPIO.input(downBut) and sel < len(gameList) - 1):
-            sel += 1
-            scroll("down")
+            scrolling = 1
             while GPIO.input(downBut):
                 sleep(0.016)
+        elif (GPIO.input(spaceBut)):
+              execfile("./GameFiles/{}/Main.py".format(gameList[sel]))
+        elif (GPIO.input(escBut)):
+              isRunning = 0
+        
+    # Scrolling active
+    else:
+        # Runs until one button reaches 96 pixels below or above (where the next button was)
+        if(scrollAmt == 96 or scrollAmt == -96):
+            scrollAmt = 0
+            #print "Scroll complete"
+            # increment the selected game after scrolling
+            sel += scrolling
+            scrolling = 0
+        # Increases scrolling offset for buttons and labels
+        else:
+            scrollAmt += 6*scrolling
 
-    
+              
 
-    # Renders lower layer objects
-    render()
+    # Renders lower layer objects - NOT TO BE OVERWRITTEN in other games
+    mainRender()
 
-    # Layer 2 - Buttons
+    # Buttons
     if (sel > 0):
         gameDisplay.blit(upArrow, [32,32])
     # Displays the selected games
-    if (sel < len(gameList) - 2):
+
+
+    # Determines how close it is to the end of the list, only renders the possible ones
+    if (sel < len(gameList) - 4):
+        gMax = 4
+    elif (sel == len(gameList) - 3):
         gMax = 3
     elif (sel == len(gameList) - 2):
         gMax = 2
     elif (sel == len(gameList) - 1):
         gMax = 1
+    # Renders a fourth game that shows only when scrolling down
     for game in range(sel, sel + gMax):
         if (game == sel):
-            gameDisplay.blit(buttonSel, [32, 128 + (game-sel)*96])
+            # every 96 pixels vertically there is a button
+            # Note the scrollAmt offset
+            gameDisplay.blit(buttonSel, [32, 128 + (game-sel)*96 - scrollAmt])
         else:
-            gameDisplay.blit(buttonUnsel, [32, 128 + (game-sel)*96])
-    # Layer 3 - Text
-        # Displays game names over buttons
-        gameDisplay.blit(gamesText[game],(48, 136+(game-sel)*96))
+            gameDisplay.blit(buttonUnsel, [32, 128 + (game-sel)*96 - scrollAmt])
+            
+    # Button Labels
+        # Displays game labels over buttons
+        gameDisplay.blit(gamesText[game],(48, 136+(game-sel)*96 - scrollAmt))
+        # Displays the Title Text - render redundant, but goes over buttons for scrolling
+        gameDisplay.blit(title, (112, 16))
     
     pygame.display.update()
     sleep(0.016)
     if not Running:
         title  = titleFont.render("Welcome BACK to the PiRIS", False, (255,255,0))
         resetWindow()
-        
+
+# Cleanup process
 GPIO.cleanup()
 pygame.quit()
 sys.exit()
