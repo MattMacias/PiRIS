@@ -69,18 +69,17 @@ def resetWindow():
 
 
 def mainRender():
-    # Bottom Layer 1 - Background
+    # Bottom Layer - Background
     gameDisplay.blit(background, [0, 0])
-    # Layer 2 - 32 x 32 px Gridlines
-    for x in range(0,winWidth, 32):
-        for y in range(0,winHeight, 32):
-            pygame.draw.rect(gameDisplay, (150,150,150), (x, y, 33, 33), 1)
-    # Layer 2 - boxes and buttons
+##    # Debugging 32 x 32 px gridlines
+##    for x in range(0,winWidth, 32):
+##        for y in range(0,winHeight, 32):
+##            pygame.draw.rect(gameDisplay, (150,150,150), (x, y, 33, 33), 1)
+
     # Displays the selected game's image
     pygame.draw.rect(gameDisplay, (0,0,0), (316,92, 424, 296))
     gameDisplay.blit(gamesImg[sel], [320, 96])
     
-
     # Displays the Title Text
     gameDisplay.blit(title, (112, 16))
     
@@ -139,10 +138,10 @@ while isRunning:
 
     
 
-    # Renders lower layer objects - NOT TO BE OVERWRITTEN
+    # Renders lower layer objects - NOT TO BE OVERWRITTEN in other games
     mainRender()
 
-    # Layer 2 - Buttons
+    # Buttons
     if (sel > 0):
         gameDisplay.blit(upArrow, [32,32])
     # Displays the selected games
@@ -165,7 +164,8 @@ while isRunning:
             gameDisplay.blit(buttonSel, [32, 128 + (game-sel)*96 - scrollAmt])
         else:
             gameDisplay.blit(buttonUnsel, [32, 128 + (game-sel)*96 - scrollAmt])
-    # Layer 3 - Text
+            
+    # Button Labels
         # Displays game labels over buttons
         gameDisplay.blit(gamesText[game],(48, 136+(game-sel)*96 - scrollAmt))
         # Displays the Title Text - render redundant, but goes over buttons for scrolling

@@ -77,11 +77,11 @@ def render():
     # Displays the background
     gameDisplay.blit(bg, (0,0))
 
-    # Draws placeholder gridlines
-    for meridian in range(0,winWidth,32):
-        gameDisplay.fill(black, rect = [meridian, 0, 1, winHeight])
-    for parallel in range(0,winHeight,32):
-        gameDisplay.fill(black, rect = [0,parallel, winWidth, 1])
+##    # Draws placeholder gridlines
+##    for meridian in range(0,winWidth,32):
+##        gameDisplay.fill(black, rect = [meridian, 0, 1, winHeight])
+##    for parallel in range(0,winHeight,32):
+##        gameDisplay.fill(black, rect = [0,parallel, winWidth, 1])
 
 
     
@@ -105,9 +105,10 @@ def render():
     # Draw the player
     for p in range(len(player)):
             player[p].render()
-    
-    sleep(0.016)
+
+    # Output to the screen
     pygame.display.update()
+    sleep(0.016)
 
 
 
@@ -117,23 +118,36 @@ def render():
 ##########################################
 
 # Variable setup
-size = 10
-headx = [64, winWidth - 96]
-heady = [winHeight /2 - size/2, winHeight /2 - size/2]
-goingUp = 0
-goingRight = 0
-upSpeed = 3
-rightSpeed = 3
-playing = True
-
-arrows = pygame.key.get_pressed()[273:277]
+Running = True
 playerTurn = 1
 gameTurn   = 1
-Running = True
 power, angle = 0, 0
+arrows = pygame.key.get_pressed()[273:277]
 player = [Player(64, "blue"), Player(winWidth - 96, "red")]
 
 
+# Loading screen with how to play
+gameDisplay.blit(bg, (0,0))
+tFont = pygame.font.SysFont("verdana",60)
+dFont = pygame.font.SysFont("verdana",30)
+titleLabel  = tFont.render("Welcome to FlingFenders!", False, (255,255,0))
+descLabel1  = dFont.render("Use arrow keys to adjust angle and power", False, (255,255,0))
+descLabel2  = dFont.render("Use space to fire...YOURSELF!", False, (255,255,0))
+gameDisplay.blit(titleLabel, (16, 100))
+gameDisplay.blit(descLabel1, (68, 190))
+gameDisplay.blit(descLabel2, (160, 240))
+pygame.display.update()
+
+waiting = True
+# Waits for spacebar event to begin the game
+while waiting:
+    for event in pygame.event.get():
+        if (event.type == pygame.KEYDOWN):
+            if (event.key == pygame.K_SPACE):
+                waiting = False
+            elif (event.key == pygame.K_ESCAPE):
+                waiting = False
+                Running = False
 
 while Running:
     for event in pygame.event.get():
@@ -147,14 +161,18 @@ while Running:
             if event.key == pygame.K_ESCAPE:
                 Running = False
             elif event.key == pygame.K_SPACE:
+                # Fires the player according to player input
                 impact = player[playerTurn-1].fire(power, angle)
+                # Calculate how hard the other player is knocked around by
                 dist = sqrt((player[0].x - player[1].x)**2 + (player[0].y - player[1].y)**2)
                 knockback = impact / dist * 300
+                # Add knockback to player's score
                 player[playerTurn - 1].score += knockback
+                # Knock the other player around, using knockback as power
                 if (player[not (playerTurn - 1)].x < player[playerTurn - 1].x): 
-                    player[not (playerTurn - 1)].fire(knockback, 70)
-                else:
                     player[not (playerTurn - 1)].fire(knockback, 110)
+                else:
+                    player[not (playerTurn - 1)].fire(knockback, 70)
                 if playerTurn == 1:
                     playerTurn = 2
                 else:
@@ -177,14 +195,9 @@ while Running:
         angle += 3
         if (angle > 180):
             angle = 180
-    print arrows, goingUp, goingRight, power, angle
-        
+   
 
-        
-
-
-
-    
+    # Render all changes
     render()
 
     
