@@ -152,7 +152,7 @@ while isRunning:
             while GPIO.input(downBut):
                 sleep(0.016)
         elif (GPIO.input(spaceBut)):
-              execfile("./GameFiles/{}/Main.py".format(gameList[sel]))
+              execfile("./GameFiles/{}/mainPi.py".format(gameList[sel]))
         elif (GPIO.input(escBut)):
               isRunning = 0
         
