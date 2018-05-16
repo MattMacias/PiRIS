@@ -1,11 +1,12 @@
-
-##########################################################
-#   Members: Matthew Macias, Gavin Phillips, Chris Dilley
+###############################################################################
+#   Members: Matthew Macias, Gavin Phillips, (Chris Dilley but not really)
+#   Mission: Run an RPi as a gaming console that takes games in its directory
+#               and executes them to the player's choice
 #
-#
-##########################################################
+###############################################################################
 
-import RPi.GPIO as GPIO
+# Initial Import statements
+
 import sys
 from time import time, sleep
 from os import listdir
@@ -45,11 +46,6 @@ def resetWindow():
     pygame.display.set_caption(winTitle)
     gameDisplay = pygame.display.set_mode((winWidth, winHeight))
 
-def scroll(direction):
-    render()
-    
-
-    pygame.display.update()
 
 ###
 background = pygame.image.load("tower.gif")
@@ -71,48 +67,34 @@ def render():
     # Displays the Title Text
     gameDisplay.blit(title, (112, 16))
     
-# GPIOSetup
-GPIO.setmode(GPIO.BCM)
-
-leftBut = 22
-upBut = 23
-downBut = 24
-rightBut = 25
-
-GPIO.setup(leftBut, GPIO.IN, GPIO.PUD_DOWN)
-GPIO.setup(upBut, GPIO.IN, GPIO.PUD_DOWN)
-GPIO.setup(downBut, GPIO.IN, GPIO.PUD_DOWN)
-GPIO.setup(rightBut, GPIO.IN, GPIO.PUD_DOWN)
 
 
 
 
+########################################################
+# Main Section, establishes the GUI and loops the menu
+########################################################
 
-
-
-
-
-
-# Main Section, establishes the GUI and GPIO functions
-#Variable setup
+# Static Variable setup
 gamesFont = pygame.font.SysFont("verdana",36)
+# Larger font for title
 titleFont = pygame.font.SysFont("verdana",48)
 title  = titleFont.render("Welcome to the PiRIS", False, (255,255,0))
 Running = True
 isRunning = True
 scrolling = 0
-
-
-
-gameList, gamesText, gamesImg = pullGames()
 sel = 0
+scrollAmt = 0
+
+# Imported information when pulling games
+gameList, gamesText, gamesImg = pullGames()
 
 
-# Init the Home Screen
+# Initialize the Home Screen
 resetWindow()
 
 
-
+# Menu Loop
 while isRunning:
     # Ignores buttons while scrolling
     if (not scrolling):
@@ -123,23 +105,24 @@ while isRunning:
                 if (event.key == pygame.K_ESCAPE):
                     isRunning = 0
                 elif (event.key == pygame.K_UP and sel > 0):
-                    sel -= 1
-                    scroll("up")
+                    scrolling = -1
                 elif (event.key == pygame.K_DOWN and sel < len(gameList)-1):
-                    sel += 1
-                    scroll("down")
+                    scrolling = 1
                 elif (event.key == pygame.K_SPACE):
                     execfile("./GameFiles/{}/Main.py".format(gameList[sel]))
-        if (GPIO.input(upBut) and sel > 0):
-            sel -= 1
-            scroll("up")
-            while GPIO.input(upBut):
-                sleep(0.016)
-        elif (GPIO.input(downBut) and sel < len(gameList) - 1):
-            sel += 1
-            scroll("down")
-            while GPIO.input(downBut):
-                sleep(0.016)
+
+    # Scrolling active
+    else:
+        # Runs until one button reaches 96 pixels below or above (where the next button was)
+        if(scrollAmt == 96 or scrollAmt == -96):
+            scrollAmt = 0
+            #print "Scroll complete"
+            # increment the selected game after scrolling
+            sel += scrolling
+            scrolling = 0
+        # Increases scrolling offset for buttons and labels
+        else:
+            scrollAmt += 6*scrolling
 
     
 
@@ -150,27 +133,42 @@ while isRunning:
     if (sel > 0):
         gameDisplay.blit(upArrow, [32,32])
     # Displays the selected games
-    if (sel < len(gameList) - 2):
+
+
+    # Determines how close it is to the end of the list, only renders the possible ones
+    if (sel < len(gameList) - 4):
+        gMax = 4
+    elif (sel == len(gameList) - 3):
         gMax = 3
     elif (sel == len(gameList) - 2):
         gMax = 2
     elif (sel == len(gameList) - 1):
         gMax = 1
+    # Renders a fourth game that shows only when scrolling down
     for game in range(sel, sel + gMax):
         if (game == sel):
-            gameDisplay.blit(buttonSel, [32, 128 + (game-sel)*96])
+            # every 96 pixels vertically there is a button
+            # Note the scrollAmt offset
+            gameDisplay.blit(buttonSel, [32, 128 + (game-sel)*96 - scrollAmt])
         else:
-            gameDisplay.blit(buttonUnsel, [32, 128 + (game-sel)*96])
+            gameDisplay.blit(buttonUnsel, [32, 128 + (game-sel)*96 - scrollAmt])
     # Layer 3 - Text
-        # Displays game names over buttons
-        gameDisplay.blit(gamesText[game],(48, 136+(game-sel)*96))
-    
+        # Displays game labels over buttons
+        gameDisplay.blit(gamesText[game],(48, 136+(game-sel)*96 - scrollAmt))
+        # Displays the Title Text - render redundant, but goes over buttons for scrolling
+        gameDisplay.blit(title, (112, 16))
+
+    # Upload rendered bits to the screen
     pygame.display.update()
+    # Next frame
     sleep(0.016)
+
+    # Remembers if a game was running previously
     if not Running:
         title  = titleFont.render("Welcome BACK to the PiRIS", False, (255,255,0))
+        # Some games not default may reconfig the window
         resetWindow()
         
-GPIO.cleanup()
+# Cleanup process
 pygame.quit()
 sys.exit()

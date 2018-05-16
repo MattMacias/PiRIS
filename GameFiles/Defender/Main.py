@@ -1,18 +1,13 @@
+# Initial import statements
 import pygame
 from time import time, sleep
 from Color import*
-print "loading pygame"
-pygame.init()
-print "pygame loaded"
 
-winWidth = 800
-winHeight = 416
-
-
-pygame.display.set_caption("RPG Demo")
+# Rename window
+pygame.display.set_caption("Handshoes and Horsegrenades")
 
 ##
-bg = pygame.image.load(("./GameFiles/Anky's Adv/floor.gif"))
+bg = pygame.image.load(("./GameFiles/Defender/floor.gif"))
 ##
 
 player1 = pygame.image.load("./GameFiles/Anky's Adv/test.gif")
@@ -34,6 +29,7 @@ gameTurn   = 0
 Running = True
 
 while Running:
+    # Iterates the current game turn every other turn
     if  playerTurn == 1:
         gameTurn += 1
     
@@ -44,7 +40,9 @@ while Running:
                 Running = False
                 playing = False
             arrows = pygame.key.get_pressed()[273:277]
+            # Specific key events, one time press rather than holding
             if (event.type == pygame.KEYDOWN):
+                # Quits the turn and the game
                 if event.key == pygame.K_ESCAPE:
                     Running = False
                     playing = False
