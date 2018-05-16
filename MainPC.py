@@ -12,13 +12,21 @@ from time import time, sleep
 from os import listdir
 import pygame
 
-
+###################
 # GUI Setup
+###################
 pygame.init()
+# Images
 buttonSel   = pygame.image.load(("buttonPressed.gif"))
 buttonUnsel = pygame.image.load(("buttonUnpressed.gif"))
 upArrow     = pygame.image.load(("upArrow.gif"))
 background = pygame.image.load("tower.gif")
+# Text
+gamesFont = pygame.font.SysFont("verdana",36)
+# Larger font for title
+titleFont = pygame.font.SysFont("verdana",48)
+title  = titleFont.render("Welcome to the PiRIS", False, (255,255,0))
+
 
 # Scans the GameFiles directory for games and stores their names
 def pullGames():
@@ -36,8 +44,19 @@ def pullGames():
         # Scales images from imported games
         gamesImg[len(gameList)-1] = pygame.transform.scale(gamesImg[len(gameList)-1],(416,288))
         print " {}.  {} retrieved".format(len(gameList),game)
+    # Special procedures for Anky's Adv and FlingFender
+    aIndex = gameList.index("Anky's Adv")
+    gameList[0], gameList[aIndex] = gameList[aIndex], gameList[0]
+    gameText[0], gameText[aIndex] = gameText[aIndex], gameText[0]
+    gamesImg[0],  gamesImg[aIndex]  = gamesImg[aIndex],  gamesImg[0]
+    fIndex = gameList.index("FlingFender")
+    gameList[1], gameList[fIndex] = gameList[fIndex], gameList[1]
+    gameText[1], gameText[fIndex] = gameText[fIndex], gameText[1]
+    gamesImg[1],  gamesImg[fIndex]  = gamesImg[fIndex],  gamesImg[1]
+        
     print "All compatible games retrieved!"
     return gameList, gameText, gamesImg
+
 
 def resetWindow():
     global gameDisplay, winHeight, winWidth, winTitle
@@ -49,7 +68,7 @@ def resetWindow():
 
 
 
-def render():
+def mainRender():
     # Bottom Layer 1 - Background
     gameDisplay.blit(background, [0, 0])
     # Layer 2 - 32 x 32 px Gridlines
@@ -74,10 +93,6 @@ def render():
 ########################################################
 
 # Static Variable setup
-gamesFont = pygame.font.SysFont("verdana",36)
-# Larger font for title
-titleFont = pygame.font.SysFont("verdana",48)
-title  = titleFont.render("Welcome to the PiRIS", False, (255,255,0))
 Running = True
 isRunning = True
 scrolling = 0
@@ -124,8 +139,8 @@ while isRunning:
 
     
 
-    # Renders lower layer objects
-    render()
+    # Renders lower layer objects - NOT TO BE OVERWRITTEN
+    mainRender()
 
     # Layer 2 - Buttons
     if (sel > 0):
@@ -155,6 +170,10 @@ while isRunning:
         gameDisplay.blit(gamesText[game],(48, 136+(game-sel)*96 - scrollAmt))
         # Displays the Title Text - render redundant, but goes over buttons for scrolling
         gameDisplay.blit(title, (112, 16))
+
+
+
+
 
     # Upload rendered bits to the screen
     pygame.display.update()

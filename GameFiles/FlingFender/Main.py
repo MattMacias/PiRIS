@@ -6,12 +6,10 @@ from Color import*
 # Rename window
 pygame.display.set_caption("FlingFender")
 
-##
-bg = pygame.image.load(("./GameFiles/Defender/floor.gif"))
-##
-
-player1 = pygame.image.load("./GameFiles/Anky's Adv/test.gif")
-player2 = pygame.image.load("./GameFiles/Anky's Adv/test.gif")
+# Image loading
+bg = pygame.image.load(("./GameFiles/FlingFender/floor.gif"))
+player1 = pygame.image.load("./GameFiles/FlingFender/test.gif")
+player2 = pygame.image.load("./GameFiles/FlingFender/test.gif")
 
 #Size is a square length/width
 size = 10
@@ -28,10 +26,38 @@ playerTurn = 1
 gameTurn   = 0
 Running = True
 
+def render():
+    # Displays the background
+    gameDisplay.fill(blue, rect = [0,0,winWidth, winHeight])
+
+    # Draws placeholder gridlines
+    for meridian in range(0,winWidth,32):
+        gameDisplay.fill(black, rect = [meridian, 0, 1, winHeight])
+    for parallel in range(0,winHeight,32):
+        gameDisplay.fill(black, rect = [0,parallel, winWidth, 1])
+
+
+    
+    # Displays whose turn it is and which turn it is
+    
+        
+
+    # Draw the player
+    gameDisplay.blit(player1, (headx[0], heady[0]))
+    gameDisplay.blit(player2, (headx[1], heady[1]))
+    
+    sleep(0.016)
+    pygame.display.update()
+
+def fire(turn, power, angle):
+    print "pew"
+
 while Running:
     # Iterates the current game turn every other turn
     if  playerTurn == 1:
         gameTurn += 1
+    # Resets other information
+    power, angle = 0, 0
     
     while playing:
         for event in pygame.event.get():
@@ -47,6 +73,7 @@ while Running:
                     Running = False
                     playing = False
                 elif event.key == pygame.K_SPACE:
+                    fire(playerTurn, power, angle)
                     if playerTurn == 1:
                         playerTurn = 2
                     else:
@@ -94,26 +121,6 @@ while Running:
 
 
 
-        # Displays the background
-        gameDisplay.fill(blue, rect = [0,0,winWidth, winHeight])
-
-        # Draws placeholder gridlines
-        for meridian in range(0,winWidth,32):
-            gameDisplay.fill(black, rect = [meridian, 0, 1, winHeight])
-        for parallel in range(0,winHeight,32):
-            gameDisplay.fill(black, rect = [0,parallel, winWidth, 1])
-
-
-        
-        # Displays whose turn it is and which turn it is
-        
-            
-
-        # Draw the player
-        gameDisplay.blit(player1, (headx[0], heady[0]))
-        gameDisplay.blit(player2, (headx[1], heady[1]))
-        
-        sleep(0.016)
-        pygame.display.update()
+        render()
     
 
