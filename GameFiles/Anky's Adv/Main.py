@@ -17,7 +17,62 @@ bg = pygame.image.load(("./GameFiles/Anky's Adv/floor.gif"))
 
 
 player = pygame.image.load("./GameFiles/Anky's Adv/The Ultimate Lifeform.gif")
+bullet = pygame.image.load("./GameFiles/Anky's Adv/Anky Sprites/pythonblast.gif")
+
+############################################
+class Player(pygame.sprite.Sprite):
+    def __init__(self):
+        pygame.sprite.Sprite.__init__(self)
+
+        self.image = pygame.image.load("./GameFiles/Anky's Adv/The Ultimate Lifeform.gif")
+        self.rect = self.image.get_rect()
+        self.rect.center = (WIDTH / 2, HEIGHT / 2)
+        self.rect.centerx = random.randint(1, WIDTH)
+        self.rect.bottom - random.randint(1, HEIGHT)
+
+    def shoot(self):
+        bullet = Bullet(self.rect.x, self.rect.centery)
+        all_sprites.add(bullet)
+        bullets.add(bullet)
+
+    def position(self):
+        return [self.rect.x, self.rect.y]
+###################################################
+    
+
+
+######################################
+class Bullet(pygame.sprite.Sprite):
+    def __init__(self, x, y):
+
+        pygame.sprite.Sprite>__init__(self)
+        self.image = pygame.image.load("./GameFiles/Anky's Adv/Anky Sprites/pythonblast.gif")
+        self.rect = self.image.get_rect()
+        self.rect.bottom = y
+        self.rect.centerx = x
+
+        if player.looking == "North":
+            self.speedy = -100
+            self.speedx = 0
+        if player.looking == "South":
+            self.speedy = 100
+            self.speedx = 0
+        if player.looking == "East":
+            self.speedy = 0
+            self.speedx = 100
+        if player.looking == "West":
+            self.speedy = 0
+            self.speedx = -100
+
+    def update(self):
+        self.rect.y += self.speedy
+        self.rect.x += self.speedx
+#########################################
+
+
 gameRunning = True
+
+
 
 while gameRunning:
     #Size is a square length/width
@@ -51,7 +106,13 @@ while gameRunning:
                 elif event.key == pygame.K_ESCAPE:
                     gameRunning = False
                     playing = False
-            
+                #####################
+                elif event.key == pygame.K_SPACE:
+                    bullet(Bullet)
+                    gameDisplay.blit(bullet, [0, 0])
+                #################
+                   
+
         # Up Arrow
         if (arrows[0] == 1):
             if (goingUp < 9):
