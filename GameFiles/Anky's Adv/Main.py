@@ -1,13 +1,7 @@
-import pygame
 import random
-from time import time, sleep
 from Color import*
-print "loading pygame"
-pygame.init()
-print "pygame loaded"
 
-winWidth = 800
-winHeight = 416
+
 
 WIDTH = 800
 HEIGHT = 416
