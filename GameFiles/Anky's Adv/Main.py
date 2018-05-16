@@ -12,6 +12,7 @@ winHeight = 416
 WIDTH = 800
 HEIGHT = 416
 
+
 pygame.display.set_caption("RPG Demo")
 
 ##
@@ -19,9 +20,13 @@ bg = pygame.image.load(("./GameFiles/Anky's Adv/floor.gif"))
 ##
 
 
-#player = pygame.image.load("./GameFiles/Anky's Adv/The Ultimate Lifeform.gif")
-#bullet = pygame.image.load("./GameFiles/Anky's Adv/Anky Sprites/pythonblast.gif")
-
+font_name = pygame.font.match_font("arial")
+def drawText(surf, text, size, x, y):
+    font = pygame.font.Font(font_name, size)
+    text_surface = font.render(text, True, white)
+    text_rect = text_surface.get_rect()
+    text_rect.midtop = (x, y)
+    surf.blit(text_surface, text_rect)
 
 
 ############################################
@@ -55,24 +60,6 @@ class Player(pygame.sprite.Sprite):
         blasts.add(blast)
 
 
-######################################
-class Blast(pygame.sprite.Sprite):
-    def __init__(self, x, y):
-        pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.image.load("./GameFiles/Anky's Adv/Anky Sprites/pythonblast.gif")
-        self.rect = self.image.get_rect()
-        self.rect.bottom = y
-        self.rect.centerx = x
-        self.speedy = -10
-
-    def update(self):
-        self.rect.y += self.speedy
-        if self.rect.bottom < 0:
-            self.kill()
-        
-#########################################
-
-
 #########################################
 class Bug(pygame.sprite.Sprite):
     def __init__(self):
@@ -90,10 +77,26 @@ class Bug(pygame.sprite.Sprite):
             self.rect.y = random.randrange(-100, -40)
             self.speedy = random.randrange(1, 8)
 
+######################################
+class Blast(pygame.sprite.Sprite):
+    def __init__(self, x, y):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.image.load("./GameFiles/Anky's Adv/Anky Sprites/pythonblast.gif")
+        self.rect = self.image.get_rect()
+        self.rect.bottom = y
+        self.rect.centerx = x
+        self.speedy = -10
+
+    def update(self):
+        self.rect.y += self.speedy
+        if self.rect.bottom < 0:
+            self.kill()
+        
+#########################################
 
 all_sprites = pygame.sprite.Group()
-blasts = pygame.sprite.Group()
 bugs = pygame.sprite.Group()
+blasts = pygame.sprite.Group()
 Anky = Player()
 all_sprites.add(Anky)
 
@@ -101,7 +104,7 @@ for i in range(8):
     b = Bug()
     all_sprites.add(b)
     bugs.add(b)
-    
+score = 0
 
 
 
@@ -109,8 +112,9 @@ for i in range(8):
 gameRunning = True
 
 while gameRunning:
+    
     #Size is a square length/width
-    size = 10
+    #size = 10
     #headx = winWidth  /2 - size/2
     #heady = winHeight /2 - size/2
     #goingUp = 0
@@ -126,9 +130,12 @@ while gameRunning:
             if (event.type == pygame.QUIT):
                 gameRunning = False
                 playing = False
-            elif event.type ==pygame.KEYDOWN:
+            elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
                     Anky.shoot()
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    gameRunning = False
             arrows = pygame.key.get_pressed()[273:277]
 
 ##            if (event.type == pygame.KEYDOWN):
@@ -140,23 +147,24 @@ while gameRunning:
 ##                    looking = "East"
 ##                elif event.key  == pygame.K_LEFT:
 ##                    looking = "West"
-##                elif event.key == pygame.K_ESCAPE:
-##                    gameRunning = False
+            ##elif event.ty == pygame.K_ESCAPE:
+               # gameRunning = False
 ##                    playing = False
 
-    all_sprites.update()
+        all_sprites.update()
 
     # check if blast hits a bug
-    hits = pygame.sprite.groupcollide(bugs, blasts, True, True)
-    for hit in hits:
-        b = Bug()
-        all_sprites.add(b)
-        bugs.add(b)
+        hits = pygame.sprite.groupcollide(bugs, blasts, True, True)
+        for hit in hits:
+            score += 1 
+            b = Bug()
+            all_sprites.add(b)
+            bugs.add(b)
 
     # check if bug bites Anky
-    hits = pygame.sprite.spritecollide(Anky, bugs, False)
-    if hits:
-        gameRunning = False
+        hits = pygame.sprite.spritecollide(Anky, bugs, False)
+        if hits:
+            gameRunning = False
 
 ##        # Up Arrow
 ##        if (arrows[0] == 1):
@@ -209,16 +217,17 @@ while gameRunning:
             gameDisplay.fill(black, rect = [0,parallel, winWidth, 1])
 
 
-        all_sprites.update()
+        #all_sprites.update()
 
         all_sprites.draw(gameDisplay)
+        drawText(gameDisplay, str(score), 18, WIDTH/2, 30)
         pygame.display.flip()
         
         ##
 
         # Draw the player
        # gameDisplay.blit(player, (headx, heady))
-       # sleep(0.016)
-        #pygame.display.update()
+        sleep(0.016)
+        pygame.display.update()
     
 
