@@ -60,7 +60,7 @@ class Player():
             render()
             print dy
             # Wallbouncing
-            if ((self.x + 90) > 800):
+            if ((self.x + 135) > 800):
                 dx = -dx
             elif (self.x < 0):
                 dx = -dx
@@ -126,7 +126,8 @@ while Running:
     if  playerTurn == 1:
         gameTurn += 1
     # Resets other information
-    power, angle = 0, 0
+    power = 0
+    angle = 0
     
     while playing:
         for event in pygame.event.get():

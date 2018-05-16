@@ -133,9 +133,9 @@ while gameRunning:
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
                     Anky.shoot()
-            elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
+                elif event.key == pygame.K_ESCAPE:
                     gameRunning = False
+                    playing = False
             arrows = pygame.key.get_pressed()[273:277]
 
 ##            if (event.type == pygame.KEYDOWN):
