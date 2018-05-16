@@ -10,6 +10,8 @@ pygame.display.set_caption("FlingFender")
 bg = pygame.image.load(("./GameFiles/FlingFender/floor.gif"))
 player1 = pygame.image.load("./GameFiles/FlingFender/test.gif")
 player2 = pygame.image.load("./GameFiles/FlingFender/test.gif")
+pturnFont = pygame.font.SysFont("verdana",24)
+turnFont = pygame.font.SysFont("verdana",48)
 
 #Size is a square length/width
 size = 10
@@ -39,7 +41,10 @@ def render():
 
     
     # Displays whose turn it is and which turn it is
-    
+    turnLabel  = turnFont.render("Turn {}".format(gameTurn), False, (255,255,0))
+    pturnLabel = pturnFont.render("Your move, Player {}".format(playerTurn), False, (255,255,0))
+    gameDisplay.blit(turnLabel, (320, 0))
+    gameDisplay.blit(pturnLabel, (272, 64))
         
 
     # Draw the player
