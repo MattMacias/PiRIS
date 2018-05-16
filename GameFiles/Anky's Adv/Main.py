@@ -16,14 +16,14 @@ HEIGHT = 416
 pygame.display.set_caption("RPG Demo")
 
 ##
-bg = pygame.image.load(("./GameFiles/Anky's Adv/floor.gif"))
+bg = pygame.image.load(("./GameFiles/Anky's Adv/background.gif"))
 ##
 
 
 font_name = pygame.font.match_font("arial")
 def drawText(surf, text, size, x, y):
     font = pygame.font.Font(font_name, size)
-    text_surface = font.render(text, True, white)
+    text_surface = font.render(text, True, black)
     text_rect = text_surface.get_rect()
     text_rect.midtop = (x, y)
     surf.blit(text_surface, text_rect)
