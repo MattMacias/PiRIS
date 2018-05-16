@@ -94,6 +94,22 @@ class Blast(pygame.sprite.Sprite):
         
 #########################################
 
+def show_go_screen():
+    gameDisplay.blit(bg, [0, 0])
+    drawText(gameDisplay, "Anky's Adventure", 64, WIDTH / 2, HEIGHT / 4)
+    drawText(gameDisplay, "Arrow keys move, Space to fire your python blast", 22,
+              WIDTH / 2, HEIGHT / 2)
+    drawText(gameDisplay, "The bugs are coming, get ready!", 18, WIDTH / 2, HEIGHT * 3 / 4)
+    pygame.display.flip()
+    waiting = True
+    while waiting:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+            if event.type == pygame.KEYUP:
+                waiting = False
+
+
 all_sprites = pygame.sprite.Group()
 bugs = pygame.sprite.Group()
 blasts = pygame.sprite.Group()
@@ -112,7 +128,8 @@ score = 0
 gameRunning = True
 
 while gameRunning:
-    
+    show_go_screen()
+    sleep(3.5)
 
     playing = True
    
@@ -143,10 +160,12 @@ while gameRunning:
             bugs.add(b)
 
     # check if bug bites Anky
-        hits = pygame.sprite.spritecollide(Anky, bugs, False)
+        hits = pygame.sprite.spritecollide(Anky, bugs, True)
         if hits:
-            gameRunning = False
-
+            score -= 1
+            b = Bug()
+            all_sprites.add(b)
+            bugs.add(b)
 
 
 
