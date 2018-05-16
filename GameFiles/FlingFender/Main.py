@@ -4,7 +4,7 @@ from time import time, sleep
 from Color import*
 
 # Rename window
-pygame.display.set_caption("Handshoes and Horsegrenades")
+pygame.display.set_caption("FlingFender")
 
 ##
 bg = pygame.image.load(("./GameFiles/Defender/floor.gif"))

@@ -18,6 +18,7 @@ pygame.init()
 buttonSel   = pygame.image.load(("buttonPressed.gif"))
 buttonUnsel = pygame.image.load(("buttonUnpressed.gif"))
 upArrow     = pygame.image.load(("upArrow.gif"))
+background = pygame.image.load("tower.gif")
 
 # Scans the GameFiles directory for games and stores their names
 def pullGames():
@@ -28,15 +29,14 @@ def pullGames():
     print "Scanning for games..."
     # Checks each directory within GameFiles
     for game in listdir("GameFiles"):
-        # Runs the placeholder name file within it
-        # It is better used to pull a game's logo rather than name\
-        #   Since the name is the variable 'game' already
+        # Adds a name, label, and image for each game to their corrseponding lists
         gameList.append(game)
         gameText.append(gamesFont.render(game, False, (255,255,0)))
         gamesImg.append(pygame.image.load(("GameFiles/{}/IMG.gif".format(game))))
+        # Scales images from imported games
         gamesImg[len(gameList)-1] = pygame.transform.scale(gamesImg[len(gameList)-1],(416,288))
         print " {}.  {} retrieved".format(len(gameList),game)
-    print "All compatible games retrieved"
+    print "All compatible games retrieved!"
     return gameList, gameText, gamesImg
 
 def resetWindow():
@@ -47,9 +47,7 @@ def resetWindow():
     gameDisplay = pygame.display.set_mode((winWidth, winHeight))
 
 
-###
-background = pygame.image.load("tower.gif")
-###
+
 
 def render():
     # Bottom Layer 1 - Background
