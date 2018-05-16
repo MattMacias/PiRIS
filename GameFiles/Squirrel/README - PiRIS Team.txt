@@ -1,0 +1,3 @@
+This is a game that came with the RPi. We did not make this game at all, but we edited as few lines as possible to prove that compatibility does work with any pygame game, so long as it does not contradict the main menu's variables. 
+
+Any "while True" or similar loop in any pygame game can be replaced with a "while Running:" loop so that leaving the game would return to the menu, AND tell the PiRIS that it had previously ran a game for the player (Indicated by "Welcome BACK to the PiRIS").
