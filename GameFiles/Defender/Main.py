@@ -27,14 +27,13 @@ goingRight = 0
 upSpeed = 3
 rightSpeed = 3
 playing = True
-looking = "North"
+
 arrows = pygame.key.get_pressed()[273:277]
 playerTurn = 1
 gameTurn   = 0
+Running = True
 
-gameRunning = True
-
-while gameRunning:
+while Running:
     if  playerTurn == 1:
         gameTurn += 1
     
@@ -42,21 +41,12 @@ while gameRunning:
         for event in pygame.event.get():
             # Exit button pressed
             if (event.type == pygame.QUIT):
-                gameRunning = False
+                Running = False
                 playing = False
             arrows = pygame.key.get_pressed()[273:277]
-
             if (event.type == pygame.KEYDOWN):
-                if event.key    == pygame.K_UP:
-                    looking = "North"
-                elif event.key  == pygame.K_DOWN:
-                    looking = "South"
-                elif event.key  == pygame.K_RIGHT:
-                    looking = "East"
-                elif event.key  == pygame.K_LEFT:
-                    looking = "West"
-                elif event.key == pygame.K_ESCAPE:
-                    gameRunning = False
+                if event.key == pygame.K_ESCAPE:
+                    Running = False
                     playing = False
                 elif event.key == pygame.K_SPACE:
                     if playerTurn == 1:
@@ -89,7 +79,7 @@ while gameRunning:
             goingRight -= 1
         elif (goingRight < 0):
             goingRight += 1
-        print arrows, goingUp, goingRight, looking
+        print arrows, goingUp, goingRight
             
                 
         # Movement of the player

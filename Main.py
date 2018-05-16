@@ -5,6 +5,7 @@
 #
 ##########################################################
 
+import RPi.GPIO as GPIO
 import sys
 from time import time, sleep
 from os import listdir
@@ -71,9 +72,17 @@ def render():
     gameDisplay.blit(title, (112, 16))
     
 # GPIOSetup
+GPIO.setmode(GPIO.BCM)
 
+leftBut = 22
+upBut = 23
+downBut = 24
+rightBut = 25
 
-
+GPIO.setup(leftBut, GPIO.IN, GPIO.PUD_DOWN)
+GPIO.setup(upBut, GPIO.IN, GPIO.PUD_DOWN)
+GPIO.setup(downBut, GPIO.IN, GPIO.PUD_DOWN)
+GPIO.setup(rightBut, GPIO.IN, GPIO.PUD_DOWN)
 
 
 
@@ -121,12 +130,18 @@ while isRunning:
                     scroll("down")
                 elif (event.key == pygame.K_SPACE):
                     execfile("./GameFiles/{}/Main.py".format(gameList[sel]))
-                
+        if (GPIO.input(upBut) and sel > 0):
+            sel -= 1
+            scroll("up")
+            while GPIO.input(upBut):
+                sleep(0.016)
+        elif (GPIO.input(downBut) and sel < len(gameList) - 1):
+            sel += 1
+            scroll("down")
+            while GPIO.input(downBut):
+                sleep(0.016)
 
     
-
-    # Render the next frame
-
 
     # Renders lower layer objects
     render()
@@ -156,6 +171,6 @@ while isRunning:
         title  = titleFont.render("Welcome BACK to the PiRIS", False, (255,255,0))
         resetWindow()
         
-
+GPIO.cleanup()
 pygame.quit()
 sys.exit()
