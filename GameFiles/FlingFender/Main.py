@@ -47,17 +47,24 @@ class Player():
         self._y = value
 
     def render(self):
+        # Renders off the aesthetically center of the image
         gameDisplay.blit(self.img, (self.x - 94, self.y - 69))
 
     def fire(self, power, angle):
-        dy = sin(180*angle/pi) * power / 100
-        dx = cos(180*angle/pi) * power / 100
-        while self.y > sin(self.x / 100) + 200:
+        dy = sin(pi*angle/180) * power / 3
+        dx = cos(pi*angle/180) * power / 3
+        while self.y <= sin(self.x / 100) + 200:
             self.x += dx
-            self.y += y
+            self.y -= dy
             dy -= 1
             render()
             print dy
+            # Wallbouncing
+            if ((self.x + 90) > 800):
+                dx = -dx
+            elif (self.x < 0):
+                dx = -dx
+        self.fixY(self.x)
 
     def fixY(self, x):
         self.y = sin(x/100) + 200
@@ -148,24 +155,16 @@ while Running:
         # Down Arrow, Up overrides if both are pressed
         elif (arrows[1] == 1 and power > 0):
             power -= 1
-        elif (goingUp < 0):
-            goingUp += 1
-        elif (goingUp > 0):
-            goingUp -= 1
         # Right Arrow
         if (arrows[2] == 1):
-            angle -= 1
+            angle -= 3
             if (angle < 0):
-                angle = 359
+                angle = 0
         # Left Arrow, Right overrides if both are pressed
         elif (arrows[3] == 1):
-            angle += 1
-            if (angle > 359):
-                angle = 0
-        elif (goingRight > 0):
-            goingRight -= 1
-        elif (goingRight < 0):
-            goingRight += 1
+            angle += 3
+            if (angle > 180):
+                angle = 180
         print arrows, goingUp, goingRight, power, angle
             
 
